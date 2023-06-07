@@ -175,36 +175,38 @@ class MTCNN(object):
         """
         if boxes.size == 0:
             return np.empty((0, 3))
+#
 
+#EXTRACTING COLUMNS FFROM THE 2D MATRIX
         x1 = boxes[:, 0]
         y1 = boxes[:, 1]
         x2 = boxes[:, 2]
         y2 = boxes[:, 3]
         s = boxes[:, 4]
 
-        area = (x2 - x1 + 1) * (y2 - y1 + 1)
-        sorted_s = np.argsort(s)
+        area = (x2 - x1 + 1) * (y2 - y1 + 1) #ELEMENTWISE MULTIPLICATION
+        sorted_s = np.argsort(s) #sort the array in ascending order and then returns the index of the sorted
 
         pick = np.zeros_like(s, dtype=np.int16)
         counter = 0
         while sorted_s.size > 0:
-            i = sorted_s[-1]
-            pick[counter] = i
+            i = sorted_s[-1]  # picking the largest confidence bbox index
+            pick[counter] = i 
             counter += 1
-            idx = sorted_s[0:-1]
+            idx = sorted_s[0:-1] #get the remaining indexes and assign to a new array
 
-            xx1 = np.maximum(x1[i], x1[idx])
+            xx1 = np.maximum(x1[i], x1[idx]) #calculate what are the coordinates of the overlapping areas
             yy1 = np.maximum(y1[i], y1[idx])
             xx2 = np.minimum(x2[i], x2[idx])
             yy2 = np.minimum(y2[i], y2[idx])
 
-            w = np.maximum(0.0, xx2 - xx1 + 1)
+            w = np.maximum(0.0, xx2 - xx1 + 1) calculate width and height of the overlappinig areas of the boxes
             h = np.maximum(0.0, yy2 - yy1 + 1)
 
-            inter = w * h
-
+            inter = w * h #area of the overlapping region
+#area[i] - area of the high confidence bbox, area[idx]--> area of intersection
             if method is 'Min':
-                o = inter / np.minimum(area[i], area[idx])
+                o = inter / np.minimum(area[i], area[idx]) 
             else:
                 o = inter / (area[i] + area[idx] - inter)
 
