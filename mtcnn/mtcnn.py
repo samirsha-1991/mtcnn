@@ -264,7 +264,7 @@ class MTCNN(object):
 
     @staticmethod
     def __bbreg(boundingbox, reg):
-        # calibrate bounding boxes
+        # calibrate bounding boxes according to the regression output
         if reg.shape[1] == 1:
             reg = np.reshape(reg, (reg.shape[2], reg.shape[3]))
 
