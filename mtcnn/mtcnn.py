@@ -338,10 +338,10 @@ class MTCNN(object):
         for scale in scales:
             scaled_image = self.__scale_image(image, scale)
 
-            img_x = np.expand_dims(scaled_image, 0)
-            img_y = np.transpose(img_x, (0, 2, 1, 3))
+            img_x = np.expand_dims(scaled_image, 0)  #add an additional dimension to thr 3D image. (1, height, width, channels)
+            img_y = np.transpose(img_x, (0, 2, 1, 3))# (1, height, width, channels) to (1, width, height, channels)
 
-            out = self._pnet.predict(img_y)
+            out = self._pnet.predict(img_y) 
 
             out0 = np.transpose(out[0], (0, 2, 1, 3))
             out1 = np.transpose(out[1], (0, 2, 1, 3))
